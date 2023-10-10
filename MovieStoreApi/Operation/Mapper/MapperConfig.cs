@@ -14,9 +14,21 @@ namespace MovieStoreApi.Operation.Mapper
         {
             CreateMap<Movie, MovieResponse>()
                 .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(g => g.Name).ToList()));
+            CreateMap<Actor, MovieActorResponse>();
+            CreateMap<Director, MovieDirectorResponse>();
+            CreateMap<Genre, MovieGenreResponse>();
+
             CreateMap<Actor, ActorResponse>();
+            CreateMap<Movie, ActorMovieResponse>();
+
             CreateMap<Director, DirectorResponse>();
-            CreateMap<Genre, GenreResponse>();
+
+            CreateMap<ActorUpdateRequest,Actor>();
+            CreateMap<ActorCreateRequest,Actor>();
+
+
+
+
         }
     }
 }

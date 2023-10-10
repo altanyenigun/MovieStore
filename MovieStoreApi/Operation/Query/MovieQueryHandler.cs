@@ -9,13 +9,13 @@ using MovieStoreApi.Operation.Cqrs;
 
 namespace MovieStoreApi.Operation.Query;
 
-public class AccountQueryHandler :
+public class MovieQueryHandler :
     IRequestHandler<GetAllMovieQuery, ApiResponse<List<MovieResponse>>>
 {
     private readonly DataContext _dbContext;
     private readonly IMapper _mapper;
 
-    public AccountQueryHandler(DataContext dbContext, IMapper mapper)
+    public MovieQueryHandler(DataContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
