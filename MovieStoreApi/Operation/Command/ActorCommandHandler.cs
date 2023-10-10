@@ -47,17 +47,22 @@ public class ActorCommandHandler :
        _mapper.Map(request.Model,entity);
        
        await _dbContext.SaveChangesAsync(cancellationToken);
-       return new ApiResponse("Update is successful.");
+       return new ApiResponse();
     }
 
     public async Task<ApiResponse> Handle(DeleteActorCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _dbContext.Actors.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        var entity = await _dbContext.Actors.Include(x=>x.Movies).FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (entity == null)
         {
             return new ApiResponse("Record not found!");
         }
+        if (entity.Movies is not null && entity.Movies.Any())
+        {
+            return new ApiResponse("You Cant delete this actor!, You should delete the movies it is linked to!.");
+        }
 
+        _dbContext.Actors.Remove(entity);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
     }
