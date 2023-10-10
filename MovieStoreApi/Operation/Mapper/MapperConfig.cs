@@ -20,11 +20,16 @@ namespace MovieStoreApi.Operation.Mapper
 
             CreateMap<Actor, ActorResponse>();
             CreateMap<Movie, ActorMovieResponse>();
+            CreateMap<Movie, DirectorMovieResponse>();
+
 
             CreateMap<Director, DirectorResponse>();
 
-            CreateMap<ActorUpdateRequest,Actor>();
-            CreateMap<ActorCreateRequest,Actor>();
+            CreateMap<ActorUpdateRequest, Actor>();
+            CreateMap<ActorCreateRequest, Actor>();
+
+            CreateMap<DirectorUpdateRequest, Director>();
+            CreateMap<DirectorCreateRequest, Director>();
 
 
 
