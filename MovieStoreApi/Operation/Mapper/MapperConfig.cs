@@ -34,6 +34,8 @@ namespace MovieStoreApi.Operation.Mapper
             CreateMap<DirectorUpdateRequest, Director>();
             CreateMap<DirectorCreateRequest, Director>();
 
+            CreateMap<CustomerRegisterRequest, Customer>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
 
 
 
