@@ -18,7 +18,7 @@ public class Movie
     public virtual List<Genre> Genres { get; set; }
     public virtual Director Director { get; set; }
     public virtual List<Actor> Actors { get; set; }
-
+    public virtual List<Customer> Customers {get;set;}
 }
 
 public class MovieConfiguration : IEntityTypeConfiguration<Movie>

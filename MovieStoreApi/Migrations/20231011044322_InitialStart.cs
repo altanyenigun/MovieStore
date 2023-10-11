@@ -25,6 +25,23 @@ namespace MovieStoreApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Directors",
                 columns: table => new
                 {
@@ -75,6 +92,30 @@ namespace MovieStoreApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomerGenre",
+                columns: table => new
+                {
+                    CustomersId = table.Column<int>(type: "int", nullable: false),
+                    GenresId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerGenre", x => new { x.CustomersId, x.GenresId });
+                    table.ForeignKey(
+                        name: "FK_CustomerGenre_Customers_CustomersId",
+                        column: x => x.CustomersId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerGenre_Genres_GenresId",
+                        column: x => x.GenresId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ActorMovie",
                 columns: table => new
                 {
@@ -92,6 +133,30 @@ namespace MovieStoreApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ActorMovie_Movies_MoviesId",
+                        column: x => x.MoviesId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerMovie",
+                columns: table => new
+                {
+                    CustomersId = table.Column<int>(type: "int", nullable: false),
+                    MoviesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerMovie", x => new { x.CustomersId, x.MoviesId });
+                    table.ForeignKey(
+                        name: "FK_CustomerMovie_Customers_CustomersId",
+                        column: x => x.CustomersId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerMovie_Movies_MoviesId",
                         column: x => x.MoviesId,
                         principalTable: "Movies",
                         principalColumn: "Id",
@@ -128,6 +193,16 @@ namespace MovieStoreApi.Migrations
                 column: "MoviesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerGenre_GenresId",
+                table: "CustomerGenre",
+                column: "GenresId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerMovie_MoviesId",
+                table: "CustomerMovie",
+                column: "MoviesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GenreMovie_MoviesId",
                 table: "GenreMovie",
                 column: "MoviesId");
@@ -145,10 +220,19 @@ namespace MovieStoreApi.Migrations
                 name: "ActorMovie");
 
             migrationBuilder.DropTable(
+                name: "CustomerGenre");
+
+            migrationBuilder.DropTable(
+                name: "CustomerMovie");
+
+            migrationBuilder.DropTable(
                 name: "GenreMovie");
 
             migrationBuilder.DropTable(
                 name: "Actors");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Genres");

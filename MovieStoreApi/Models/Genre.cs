@@ -14,6 +14,7 @@ namespace MovieStoreApi.Models
         public string Name { get; set; }
 
         public virtual List<Movie> Movies { get; set; }
+        public virtual List<Customer> Customers {get;set;}
     }
 }
 
