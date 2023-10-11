@@ -10,3 +10,10 @@ public class OrderRequest
     public decimal Price { get; set; }
     public DateTime PurchaseDate { get; set; }
 }
+
+public class CustomerOrderResponse
+{
+    public string MovieName { get; set; }
+    public int Price { get; set; }
+    public DateTime PurchaseDate { get; set; }
+}

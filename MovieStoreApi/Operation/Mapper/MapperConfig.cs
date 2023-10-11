@@ -38,6 +38,9 @@ namespace MovieStoreApi.Operation.Mapper
                 .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
 
 
+            CreateMap<Order, CustomerOrderResponse>()
+                .ForMember(dest => dest.MovieName, opt => opt.MapFrom(src => src.Movie.Name))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Movie.Price));
 
         }
     }

@@ -6,3 +6,4 @@ namespace MovieStoreApi.Operation.Cqrs;
 
 public record CustomerBuyMovieCommand(int customerId, int movieId) : IRequest<ApiResponse>;
 public record CustomerAddFavoriteGenreCommand(int customerId, int genreId) : IRequest<ApiResponse>;
+public record CustomeOrderQuery(int customerId) : IRequest<ApiResponse<List<CustomerOrderResponse>>>;

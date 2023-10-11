@@ -42,5 +42,15 @@ namespace MovieStoreApi.Controllers
             var result = await _mediator.Send(operation);
             return result;
         }
+
+        [HttpGet("/myMovies")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ApiResponse<List<CustomerOrderResponse>>> CustomerOrders()
+        {
+            var customerId = (User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.NameIdentifier).Value;
+            var operation = new CustomeOrderQuery(int.Parse(customerId));
+            var result = await _mediator.Send(operation);
+            return result;
+        }
     }
 }
