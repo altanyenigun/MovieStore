@@ -33,6 +33,15 @@ public class CustomerCommandHandler :
         }
         var customer = await _dbContext.Customers.Include(x=>x.Movies).FirstOrDefaultAsync(x => x.Id == request.customerId);
         customer.Movies.Add(movie);
+        var order = new Order
+        {
+            CustomerId=request.customerId,
+            MovieId=request.movieId,
+            Price=movie.Price,
+            PurchaseDate=DateTime.Now
+
+        };
+        await _dbContext.Orders.AddAsync(order,cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
     
         return new ApiResponse();

@@ -16,6 +16,8 @@ namespace MovieStoreApi.Data
         public DbSet<Actor> Actors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +27,7 @@ namespace MovieStoreApi.Data
             modelBuilder.ApplyConfiguration(new DirectorConfiguration());
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
             base.OnModelCreating(modelBuilder);
         }
 

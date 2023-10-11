@@ -12,7 +12,7 @@ using MovieStoreApi.Data;
 namespace MovieStoreApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231011044322_InitialStart")]
+    [Migration("20231011130821_InitialStart")]
     partial class InitialStart
     {
         /// <inheritdoc />
@@ -222,6 +222,38 @@ namespace MovieStoreApi.Migrations
                     b.ToTable("Movies");
                 });
 
+            modelBuilder.Entity("MovieStoreApi.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("ActorMovie", b =>
                 {
                     b.HasOne("MovieStoreApi.Models.Actor", null)
@@ -290,6 +322,25 @@ namespace MovieStoreApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Director");
+                });
+
+            modelBuilder.Entity("MovieStoreApi.Models.Order", b =>
+                {
+                    b.HasOne("MovieStoreApi.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MovieStoreApi.Models.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("MovieStoreApi.Models.Director", b =>
