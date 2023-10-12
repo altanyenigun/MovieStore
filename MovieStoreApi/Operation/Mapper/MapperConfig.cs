@@ -14,29 +14,25 @@ namespace MovieStoreApi.Operation.Mapper
         {
             CreateMap<Movie, MovieResponse>()
                 .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres.Select(g => g.Name).ToList()));
-            CreateMap<Actor, MovieActorResponse>();
-            CreateMap<Director, MovieDirectorResponse>();
-            CreateMap<Genre, MovieGenreResponse>();
-
-            CreateMap<Actor, ActorResponse>();
             CreateMap<Movie, ActorMovieResponse>();
             CreateMap<Movie, DirectorMovieResponse>();
             CreateMap<MovieCreateRequest, Movie>();
             CreateMap<MovieUpdateRequest, Movie>();
 
-
-
-            CreateMap<Director, DirectorResponse>();
-
+            CreateMap<Actor, ActorResponse>();
+            CreateMap<Actor, MovieActorResponse>();
             CreateMap<ActorUpdateRequest, Actor>();
             CreateMap<ActorCreateRequest, Actor>();
 
+            CreateMap<Director, MovieDirectorResponse>();
+            CreateMap<Director, DirectorResponse>();
             CreateMap<DirectorUpdateRequest, Director>();
             CreateMap<DirectorCreateRequest, Director>();
 
+            CreateMap<Genre, MovieGenreResponse>();
+
             CreateMap<CustomerRegisterRequest, Customer>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
-
 
             CreateMap<Order, CustomerOrderResponse>()
                 .ForMember(dest => dest.MovieName, opt => opt.MapFrom(src => src.Movie.Name))

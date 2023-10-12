@@ -24,6 +24,7 @@ public class CustomerQueryHandler :
     public async Task<ApiResponse<List<CustomerOrderResponse>>> Handle(CustomeOrderQuery request, CancellationToken cancellationToken)
     {
         var data = await _dbContext.Orders
+            .IgnoreQueryFilters()
             .Include(x => x.Movie)
             .Where(x => x.CustomerId == request.customerId)
             .ToListAsync();

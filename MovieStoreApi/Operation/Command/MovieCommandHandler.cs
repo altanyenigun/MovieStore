@@ -73,8 +73,7 @@ public class MovieCommandHandler :
         {
             return new ApiResponse("Record not found!");
         }
-
-        _dbContext.Movies.Remove(entity);
+        entity.isActive=false;
         await _dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
     }

@@ -28,6 +28,8 @@ namespace MovieStoreApi.Data
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
+
+            modelBuilder.Entity<Movie>().HasQueryFilter(x=>x.isActive);
             base.OnModelCreating(modelBuilder);
         }
 
