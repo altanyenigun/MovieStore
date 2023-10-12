@@ -42,7 +42,7 @@ public class DirectorCommandHandler :
        var entity = await _dbContext.Directors.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
        if (entity == null)
        {
-           return new ApiResponse("Record not found!");
+           return new ApiResponse("Director not found!");
        }
 
        _mapper.Map(request.Model,entity);
@@ -56,7 +56,7 @@ public class DirectorCommandHandler :
         var entity = await _dbContext.Directors.Include(x=>x.Movies).FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (entity == null)
         {
-            return new ApiResponse("Record not found!");
+            return new ApiResponse("Director not found!");
         }
         if(entity.Movies is not null && entity.Movies.Any())
         {
