@@ -41,7 +41,7 @@ public class ActorCommandHandler :
        var entity = await _dbContext.Actors.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
        if (entity == null)
        {
-           return new ApiResponse("Record not found!");
+           return new ApiResponse("Actor not found!");
        }
 
        _mapper.Map(request.Model,entity);
@@ -55,7 +55,7 @@ public class ActorCommandHandler :
         var entity = await _dbContext.Actors.Include(x=>x.Movies).FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (entity == null)
         {
-            return new ApiResponse("Record not found!");
+            return new ApiResponse("Actor not found!");
         }
         if (entity.Movies is not null && entity.Movies.Any())
         {
