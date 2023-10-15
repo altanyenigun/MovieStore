@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MovieStoreApi.Data;
 using MovieStoreApi.Operation.Validation;
+using MovieStoreApi.Services.Logger;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // appsettingsteki sql conenctionstringi alıp dbye bağlanma
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddSingleton<ILoggerService,ConsoleLogger>();
+
 builder.Services.AddControllers().AddFluentValidation(x =>
     {
         x.RegisterValidatorsFromAssemblyContaining<BaseValidator>();
@@ -53,6 +56,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionMiddleware();
+
+app.UseLoggerMiddleware();
 
 app.UseHttpsRedirection();
 
