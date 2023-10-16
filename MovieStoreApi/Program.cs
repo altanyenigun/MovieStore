@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MovieStoreApi.Common.DIContainer;
 using MovieStoreApi.Data;
 using MovieStoreApi.Operation.Validation;
 using MovieStoreApi.Services.Logger;
@@ -14,9 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // appsettingsteki sql conenctionstringi alıp dbye bağlanma
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-builder.Services.AddMediatR(typeof(Program));
-builder.Services.AddSingleton<ILoggerService,ConsoleLogger>();
+DIContainer.RegisterServices(builder.Services);
 
 builder.Services.AddControllers().AddFluentValidation(x =>
     {
