@@ -16,11 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // appsettingsteki sql conenctionstringi alıp dbye bağlanma
 DIContainer.RegisterServices(builder.Services);
-
-builder.Services.AddControllers().AddFluentValidation(x =>
-    {
-        x.RegisterValidatorsFromAssemblyContaining<BaseValidator>();
-    });
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

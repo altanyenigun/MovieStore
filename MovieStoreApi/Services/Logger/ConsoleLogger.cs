@@ -10,7 +10,7 @@ namespace MovieStoreApi.Services.Logger
 
         public void LogError(string message)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("\n[{0}] -----LogError-----  \n{1}\n",DateTime.Now,message);
         }
 
         public void LogRequest(string message)
