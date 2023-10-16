@@ -12,6 +12,10 @@ public class CreateMovieValidator : AbstractValidator<MovieCreateRequest>
     {
         RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
 
+        RuleFor(x => x.Name)
+            .Must(Name => !dbContext.Movies.Any(x => x.Name == Name))
+            .WithMessage("Movie Name already registered.");
+
         RuleFor(x => x.Year)
            .GreaterThan(1900).WithMessage("Year must be greater than 1900.");
 

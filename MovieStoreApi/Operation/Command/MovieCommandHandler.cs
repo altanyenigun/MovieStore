@@ -1,18 +1,21 @@
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MovieStoreApi.Common.Exceptions;
 using MovieStoreApi.Common.Response;
 using MovieStoreApi.Data;
 using MovieStoreApi.DTOs;
 using MovieStoreApi.Models;
 using MovieStoreApi.Operation.Cqrs;
+using MovieStoreApi.Operation.Validation;
 
 namespace Vk.Operation.Command;
 
 public class MovieCommandHandler :
     IRequestHandler<CreateMovieCommand, ApiResponse<MovieResponse>>,
-    IRequestHandler<UpdateMovieCommand,ApiResponse>,
-    IRequestHandler<DeleteMovieCommand,ApiResponse>
+    IRequestHandler<UpdateMovieCommand, ApiResponse>,
+    IRequestHandler<DeleteMovieCommand, ApiResponse>
 {
     private readonly DataContext _dbContext;
     private readonly IMapper _mapper;
@@ -26,6 +29,9 @@ public class MovieCommandHandler :
 
     public async Task<ApiResponse<MovieResponse>> Handle(CreateMovieCommand request, CancellationToken cancellationToken)
     {
+        CreateMovieValidator validator = new CreateMovieValidator(_dbContext);
+        await validator.ValidateAndThrowAsync(request.Model, cancellationToken);
+
         Movie mapped = _mapper.Map<Movie>(request.Model);
 
         List<Genre> genres = _dbContext.Genres.Where(g => request.Model.GenreIds.Contains(g.Id)).ToList();
@@ -35,8 +41,8 @@ public class MovieCommandHandler :
         mapped.Genres = genres;
         mapped.Director = director;
         mapped.Actors = actors;
-        
-        var entity = await _dbContext.Movies.AddAsync(mapped,cancellationToken);
+
+        var entity = await _dbContext.Movies.AddAsync(mapped, cancellationToken);
         await _dbContext.SaveChangesAsync();
 
         var response = _mapper.Map<MovieResponse>(entity.Entity);
@@ -46,13 +52,22 @@ public class MovieCommandHandler :
 
     public async Task<ApiResponse> Handle(UpdateMovieCommand request, CancellationToken cancellationToken)
     {
-       var entity = await _dbContext.Movies.Include(x=>x.Actors).Include(x=>x.Director).Include(x=>x.Genres).FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-       if (entity == null)
-       {
-           return new ApiResponse("Record not found!");
-       }
-       
-       _mapper.Map(request.Model,entity);
+        var entity = await _dbContext.Movies.Include(x => x.Actors).Include(x => x.Director).Include(x => x.Genres).FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        if (entity is null)
+        {
+            throw CustomExceptions.MOVIE_NOT_FOUND;
+        }
+
+        var movieNameIsExist = await _dbContext.Movies.FirstOrDefaultAsync(x=>x.Name == request.Model.Name && x.Id != entity.Id);
+        if(movieNameIsExist is not null)
+        {
+            throw CustomExceptions.MOVIE_NAME_ALREADY_IN_USE;
+        }
+
+        UpdateMovieValidator validator = new UpdateMovieValidator(_dbContext);
+        await validator.ValidateAndThrowAsync(request.Model, cancellationToken);
+
+        _mapper.Map(request.Model, entity);
 
         List<Genre> genres = _dbContext.Genres.Where(g => request.Model.GenreIds.Contains(g.Id)).ToList();
         Director director = _dbContext.Directors.FirstOrDefault(d => d.Id == request.Model.DirectorId);
@@ -61,9 +76,9 @@ public class MovieCommandHandler :
         entity.Genres = genres;
         entity.Director = director;
         entity.Actors = actors;
-       
-       await _dbContext.SaveChangesAsync(cancellationToken);
-       return new ApiResponse();
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return new ApiResponse();
     }
 
     public async Task<ApiResponse> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
@@ -71,9 +86,9 @@ public class MovieCommandHandler :
         var entity = await _dbContext.Movies.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (entity == null)
         {
-            return new ApiResponse("Record not found!");
+            throw CustomExceptions.MOVIE_NOT_FOUND;
         }
-        entity.isActive=false;
+        entity.isActive = false;
         await _dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
     }

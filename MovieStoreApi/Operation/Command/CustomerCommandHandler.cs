@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MovieStoreApi.Common.Exceptions;
 using MovieStoreApi.Common.Response;
 using MovieStoreApi.Data;
 using MovieStoreApi.DTOs;
@@ -26,24 +27,31 @@ public class CustomerCommandHandler :
 
     public async Task<ApiResponse> Handle(CustomerBuyMovieCommand request, CancellationToken cancellationToken)
     {
-        var movie = await _dbContext.Movies.Include(x=>x.Actors).Include(x=>x.Director).Include(x=>x.Genres).Include(x=>x.Customers).FirstOrDefaultAsync(x => x.Id == request.movieId);
+        var movie = await _dbContext.Movies.Include(x => x.Actors).Include(x => x.Director).Include(x => x.Genres).Include(x => x.Customers).FirstOrDefaultAsync(x => x.Id == request.movieId);
         if (movie is null)
         {
-            return new ApiResponse("Movie not found!");
+            throw CustomExceptions.MOVIE_NOT_FOUND;
         }
-        var customer = await _dbContext.Customers.Include(x=>x.Movies).FirstOrDefaultAsync(x => x.Id == request.customerId);
+
+        var customer = await _dbContext.Customers.Include(x => x.Movies).FirstOrDefaultAsync(x => x.Id == request.customerId);
+
+        if (customer.Movies.Any(x => x.Id == movie.Id))
+        {
+            throw CustomExceptions.ALREADY_HAVE_THIS_MOVIE;
+        }
+
         customer.Movies.Add(movie);
         var order = new Order
         {
-            CustomerId=request.customerId,
-            MovieId=request.movieId,
-            Price=movie.Price,
-            PurchaseDate=DateTime.Now
+            CustomerId = request.customerId,
+            MovieId = request.movieId,
+            Price = movie.Price,
+            PurchaseDate = DateTime.Now
 
         };
-        await _dbContext.Orders.AddAsync(order,cancellationToken);
+        await _dbContext.Orders.AddAsync(order, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-    
+
         return new ApiResponse();
     }
 
@@ -52,12 +60,19 @@ public class CustomerCommandHandler :
         var genre = await _dbContext.Genres.FirstOrDefaultAsync(x => x.Id == request.genreId);
         if (genre is null)
         {
-            return new ApiResponse("Genre not found!");
+            throw CustomExceptions.GENRE_NOT_FOUND;
         }
-        var customer = await _dbContext.Customers.Include(x=>x.Genres).FirstOrDefaultAsync(x => x.Id == request.customerId);
+
+        var customer = await _dbContext.Customers.Include(x => x.Genres).FirstOrDefaultAsync(x => x.Id == request.customerId);
+
+        if (customer.Genres.Any(x => x.Id == genre.Id))
+        {
+            throw CustomExceptions.ALREADY_HAVE_THIS_GENRE;
+        }
+        
         customer.Genres.Add(genre);
         await _dbContext.SaveChangesAsync(cancellationToken);
-    
+
         return new ApiResponse();
     }
 }

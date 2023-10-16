@@ -2,14 +2,17 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MovieStoreApi.Common.Exceptions;
 using MovieStoreApi.Common.Response;
 using MovieStoreApi.Data;
 using MovieStoreApi.DTOs;
 using MovieStoreApi.Models;
 using MovieStoreApi.Operation.Cqrs;
+using MovieStoreApi.Operation.Validation;
 
 namespace Vk.Operation.Command;
 
@@ -23,7 +26,7 @@ public class AuthCommandHandler :
     private readonly IConfiguration _configuration;
 
 
-    public AuthCommandHandler(DataContext dbContext, IMapper mapper,IConfiguration configuration)
+    public AuthCommandHandler(DataContext dbContext, IMapper mapper, IConfiguration configuration)
     {
         _dbContext = dbContext;
         _mapper = mapper;
@@ -37,11 +40,12 @@ public class AuthCommandHandler :
 
         //Checking if the user exists and the password is correct
         if (customer is null || !BCrypt.Net.BCrypt.Verify(request.Model.Password, customer.PasswordHash))
-            return new ApiResponse<LoginResponse>("Wrong Username or Password!");
+            throw CustomExceptions.LOGIN_FAILED;
 
         string token = CreateToken(customer);
-        var LoginResponse = new LoginResponse{
-            Token=token
+        var LoginResponse = new LoginResponse
+        {
+            Token = token
         };
 
         return new ApiResponse<LoginResponse>(LoginResponse);
@@ -49,9 +53,12 @@ public class AuthCommandHandler :
 
     public async Task<ApiResponse> Handle(CustomerRegisterCommand request, CancellationToken cancellationToken)
     {
+        CustomerRegisterValidator validator = new CustomerRegisterValidator();
+        await validator.ValidateAndThrowAsync(request.Model,cancellationToken);
+        
         var customer = await _dbContext.Customers.FirstOrDefaultAsync(u => u.Username == request.Model.Username);
         if (customer is not null)
-            return new ApiResponse("Username already in use!");
+            throw CustomExceptions.USERNAME_ALREADY_IN_USE;
 
 
         string PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Model.Password);
