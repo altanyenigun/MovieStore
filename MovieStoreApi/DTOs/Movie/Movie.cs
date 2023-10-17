@@ -24,7 +24,7 @@ public class MovieCreateRequest
     public bool isActive { get; set; } = true;
 
     public List<int> GenreIds { get; set; } // Sadece Genre'ların Id'lerini alacağız
-    public int DirectorId { get; set; }     // Sadece Director'ün Id'sini alacağız
+    public int? DirectorId { get; set; }     // Sadece Director'ün Id'sini alacağız
     public List<int> ActorIds { get; set; } // Sadece Actor'ların Id'lerini alacağız
 }
 
