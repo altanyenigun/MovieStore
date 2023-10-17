@@ -11,7 +11,7 @@ using MovieStoreApi.Models;
 using MovieStoreApi.Operation.Cqrs;
 using MovieStoreApi.Operation.Validation;
 
-namespace Vk.Operation.Command;
+namespace MovieStoreApi.Operation.Command;
 
 public class DirectorCommandHandler :
     IRequestHandler<CreateDirectorCommand, ApiResponse<DirectorResponse>>,

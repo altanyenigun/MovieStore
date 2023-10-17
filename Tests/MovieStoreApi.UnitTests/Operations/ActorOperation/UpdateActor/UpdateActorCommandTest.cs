@@ -7,7 +7,7 @@ using MovieStoreApi.DTOs;
 using MovieStoreApi.Operation.Cqrs;
 using MovieStoreApi.Operation.Validation;
 using MovieStoreApi.UnitTests.TestSetups;
-using Vk.Operation.Command;
+using MovieStoreApi.Operation.Command;
 
 namespace MovieStoreApi.UnitTests.Operations.ActorOperation.UpdateActor
 {

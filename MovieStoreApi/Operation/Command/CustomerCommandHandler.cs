@@ -8,7 +8,7 @@ using MovieStoreApi.DTOs;
 using MovieStoreApi.Models;
 using MovieStoreApi.Operation.Cqrs;
 
-namespace Vk.Operation.Command;
+namespace MovieStoreApi.Operation.Command;
 
 public class CustomerCommandHandler :
     IRequestHandler<CustomerBuyMovieCommand, ApiResponse>,

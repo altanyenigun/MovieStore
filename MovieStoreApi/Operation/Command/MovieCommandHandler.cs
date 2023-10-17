@@ -10,7 +10,7 @@ using MovieStoreApi.Models;
 using MovieStoreApi.Operation.Cqrs;
 using MovieStoreApi.Operation.Validation;
 
-namespace Vk.Operation.Command;
+namespace MovieStoreApi.Operation.Command;
 
 public class MovieCommandHandler :
     IRequestHandler<CreateMovieCommand, ApiResponse<MovieResponse>>,

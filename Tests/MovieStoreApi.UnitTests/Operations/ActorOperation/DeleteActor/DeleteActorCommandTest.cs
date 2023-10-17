@@ -5,7 +5,7 @@ using MovieStoreApi.Common.Exceptions;
 using MovieStoreApi.Models;
 using MovieStoreApi.Operation.Cqrs;
 using MovieStoreApi.UnitTests.TestSetups;
-using Vk.Operation.Command;
+using MovieStoreApi.Operation.Command;
 
 namespace MovieStoreApi.UnitTests.Operations.ActorOperation.DeleteActor
 {

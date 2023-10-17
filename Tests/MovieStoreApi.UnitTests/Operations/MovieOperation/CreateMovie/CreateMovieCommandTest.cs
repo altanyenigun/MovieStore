@@ -7,7 +7,7 @@ using FluentValidation;
 using MovieStoreApi.DTOs;
 using MovieStoreApi.Operation.Cqrs;
 using MovieStoreApi.UnitTests.TestSetups;
-using Vk.Operation.Command;
+using MovieStoreApi.Operation.Command;
 
 namespace MovieStoreApi.UnitTests.Operations.MovieOperation.CreateMovie
 {
