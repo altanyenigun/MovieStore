@@ -19,6 +19,8 @@ namespace MovieStoreApi.UnitTests.TestSetups
             Context = new FakeDataContext(options);
 
             Context.Database.EnsureCreated(); // oluşturulduğundan emin ol
+            Context.AddData();
+            Context.SaveChanges();
 
             Mapper = new MapperConfiguration(cfg => { cfg.AddProfile<MapperConfig>(); }).CreateMapper();// Direk olarak WebApi içerisindeki mapper configlerini kullanmasını gösteriyoruz.
         }
