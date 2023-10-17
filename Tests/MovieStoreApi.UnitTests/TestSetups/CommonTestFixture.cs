@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MovieStoreApi.Data;
 using MovieStoreApi.Operation.Mapper;
 
@@ -11,6 +12,7 @@ namespace MovieStoreApi.UnitTests.TestSetups
     {
         public FakeDataContext Context { get; set; }
         public IMapper Mapper { get; set; }
+        public IConfiguration Configuration;
 
         public CommonTestFixture()
         {
@@ -23,6 +25,9 @@ namespace MovieStoreApi.UnitTests.TestSetups
             Context.SaveChanges();
 
             Mapper = new MapperConfiguration(cfg => { cfg.AddProfile<MapperConfig>(); }).CreateMapper();// Direk olarak WebApi içerisindeki mapper configlerini kullanmasını gösteriyoruz.
+
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+            Configuration = configurationBuilder.Build();
         }
     }
 }
